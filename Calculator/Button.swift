@@ -23,15 +23,14 @@ struct CalculatorButton: View {
                 .foregroundStyle(Color.white)
                 .frame(width: geometry.size.height - 10, height: geometry.size.height - 10)
                 .background(buttonColor)
+                .opacity(buttonMeta.isOpaque() ? 1 : 0)
                 .cornerRadius(geometry.size.width/2)
                 .padding(5)
                 .onTapGesture {
-                    // iOS and macOS: Animate feedback on tap
                     let originalColor = buttonMeta.getButtonColor()
                     withAnimation(.easeInOut(duration: 0.2)) {
                         buttonColor = .red
                     }
-                    // Animate back to original color after 0.2 seconds
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             buttonColor = originalColor
@@ -40,9 +39,12 @@ struct CalculatorButton: View {
                 }
             #if os(macOS)
                 .onHover { hovering in
-                    let newColor = hovering ? Color.white : buttonMeta.getButtonColor()
-                    withAnimation(.easeInOut(duration: 0.5)) {
-                        buttonColor = newColor
+                    if hovering {
+                        buttonColor = .white
+                    } else {
+                        withAnimation(.easeInOut(duration: 0.5)) {
+                            buttonColor = buttonMeta.getButtonColor()
+                        }
                     }
                 }
             #else
@@ -73,6 +75,7 @@ struct CalculatorButton: View {
 enum CalculatorButtonType {
     case Numeral
     case Operator
+    case Other
 }
 
 struct CalculatorButtonMetaMeta: Identifiable {
@@ -88,22 +91,41 @@ struct CalculatorButtonMetaMeta: Identifiable {
 enum CalculatorButtonMeta {
     case Numeral(Int)
     case Operator(Operation)
+    
+    /// Invisible button that takes up normal space
+    case Placeholder
+    
+    
+    /// Wether the button should be hidden
 
     func getType() -> CalculatorButtonType {
         switch self {
-        case .Numeral(_):
-            return .Numeral
-        case .Operator(_):
-            return .Operator
+            case .Numeral(_):
+                return .Numeral
+            case .Operator(_):
+                return .Operator
+            default:
+                return .Other
+        }
+    }
+    
+    func isOpaque() -> Bool {
+        switch self {
+            case .Placeholder:
+                return false
+            default:
+                return true
         }
     }
 
     func getDisplayText() -> String {
         switch self {
-        case .Numeral(let x):
-            return String(x)
-        case .Operator(let op):
-            return op.getDisplayText()
+            case .Numeral(let x):
+                return String(x)
+            case .Operator(let op):
+                return op.getDisplayText()
+            default:
+                return ""
         }
     }
     

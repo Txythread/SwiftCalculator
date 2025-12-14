@@ -34,6 +34,13 @@ struct ContentView: View {
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(1)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Subtraction))
         ],
+        
+        [
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(0)),
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Division))
+        ],
     ]
     
     @State var buttonWidth: CGFloat = 10
@@ -79,10 +86,7 @@ struct ContentView: View {
                         }
                         .frame(height: buttonWidth)
                     }
-                }
-                
-                Spacer()
-            }
+                }            }
         }
     }
 
