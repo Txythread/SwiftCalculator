@@ -10,6 +10,8 @@ import SwiftUI
 struct CalculatorButton: View {
     @Binding var buttonMeta: CalculatorButtonMeta
     @State var buttonColor: Color
+    @State var pressed = false
+    @State var buttonShrink: CGFloat = 10
     
     #if os(macOS)
     #else
@@ -21,19 +23,21 @@ struct CalculatorButton: View {
             Text(buttonMeta.getDisplayText())
                 .font(.system(size: 30))
                 .foregroundStyle(Color.white)
-                .frame(width: geometry.size.height - 10, height: geometry.size.height - 10)
+                .frame(width: geometry.size.height - buttonShrink, height: geometry.size.height - buttonShrink)
                 .background(buttonColor)
                 .opacity(buttonMeta.isOpaque() ? 1 : 0)
                 .cornerRadius(geometry.size.width/2)
-                .padding(5)
+                .padding(buttonShrink/2)
                 .onTapGesture {
                     let originalColor = buttonMeta.getButtonColor()
                     withAnimation(.easeInOut(duration: 0.2)) {
+                        pressed = true
                         buttonColor = .red
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        withAnimation(.easeInOut(duration: 0.2)) {
+                        withAnimation(.easeInOut(duration: 0.1)) {
                             buttonColor = originalColor
+                            pressed = false
                         }
                     }
                 }
@@ -62,6 +66,18 @@ struct CalculatorButton: View {
                         }
                 )
             #endif
+                .onChange(of: pressed) { oldValue, newValue in
+                    if newValue {
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            buttonShrink = 20
+                            
+                        }
+                    } else {
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            buttonShrink = 10
+                        }
+                    }
+                }
         }
     }
 
@@ -153,11 +169,3 @@ enum Operation {
         }
     }
 }
-/*
-#Preview {
-    @Previewable @State var buttonT = CalculatorButtonMeta.Numeral(2)
-    
-    CalculatorButton(buttonMeta: $buttonT)
-        .frame(width: 100, height: 100)
-}
-*/
