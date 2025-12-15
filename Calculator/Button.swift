@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CalculatorButton: View {
     @Binding var buttonMeta: CalculatorButtonMeta
+    @Binding var currentCalculation: [Token]
     @State var buttonColor: Color
     @State var pressed = false
     @State var buttonShrink: CGFloat = 10
@@ -29,10 +30,11 @@ struct CalculatorButton: View {
                 .cornerRadius(geometry.size.width/2)
                 .padding(buttonShrink/2)
                 .onTapGesture {
+                    updateCalculation()
                     let originalColor = buttonMeta.getButtonColor()
                     withAnimation(.easeInOut(duration: 0.2)) {
                         pressed = true
-                        buttonColor = .red
+                        buttonColor = .blue
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         withAnimation(.easeInOut(duration: 0.1)) {
@@ -80,10 +82,42 @@ struct CalculatorButton: View {
                 }
         }
     }
+    
+    func updateCalculation()  {
+        print("updating calculation_1")
+        
+        if let lastElement = self.currentCalculation.last {
+            switch lastElement {
+                case .Number(var number):
+                    switch self.buttonMeta {
+                        case .Numeral(_):
+                            number.appendNumeral(new: self.buttonMeta.getNumber())
+                            self.currentCalculation[self.currentCalculation.count - 1] = Token.Number(number)
+                        default:
+                            break
+                    }
+                    return
+                case .Operator(_):
+                    // Create new entry
+                    // don't return
+                    break
+            }
+        }
+        
+        // Handle creating a new element
+        let newElement = Token.Number(Number(base: 10, numerals: [self.buttonMeta.getNumber()!]))
+        
+        print("updating calculation")
+        
+        currentCalculation.append(newElement)
+        
+        
+    }
 
-    init(buttonMeta: Binding<CalculatorButtonMeta>) {
+    init(buttonMeta: Binding<CalculatorButtonMeta>, currentCalculation: Binding<[Token]>) {
         self._buttonMeta = buttonMeta
         self._buttonColor = State(initialValue: buttonMeta.wrappedValue.getType() == .Numeral ? .gray : .orange)
+        self._currentCalculation = currentCalculation
     }
 }
 
@@ -131,6 +165,15 @@ enum CalculatorButtonMeta {
                 return false
             default:
                 return true
+        }
+    }
+    
+    func getNumber() -> UInt8? {
+        switch self {
+            case .Numeral(let int):
+                return UInt8(int)
+            default:
+                return nil
         }
     }
 

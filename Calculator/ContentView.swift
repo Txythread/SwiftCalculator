@@ -41,6 +41,8 @@ struct ContentView: View {
         ],
     ]
     
+    @State var currentCalculation: [Token] = []
+    
     @State var buttonWidth: CGFloat = 10
     
     var body: some View {
@@ -52,12 +54,17 @@ struct ContentView: View {
             VStack {
                 Text(calculationText)
                     .font(.system(size: 40))
+                    .foregroundStyle(.white)
                     .padding(.all, 0)
                     .frame(minWidth: 0, idealWidth: 20000, maxWidth: 20000)
                     .padding(.all, 10)
                     .background(Color.gray, alignment: .bottom)
                     .cornerRadius(30)
                     .padding(.all, 10)
+                    .onChange(of: currentCalculation) { _, _ in
+                        updateCalculationText()
+                    }
+                
                 
                 Spacer()
                 
@@ -67,7 +74,8 @@ struct ContentView: View {
                             HStack(spacing: 0) {
                                 ForEach(buttons[rowIndex].indices, id: \.self) { columnIndex in
                                     CalculatorButton(
-                                        buttonMeta: $buttons[rowIndex][columnIndex].content
+                                        buttonMeta: $buttons[rowIndex][columnIndex].content,
+                                        currentCalculation: $currentCalculation
                                     )
                                     .frame(
                                         maxWidth: buttonWidth,
@@ -84,10 +92,20 @@ struct ContentView: View {
                         }
                         .frame(height: buttonWidth)
                     }
-                }            }
+                    
+                }
+            }
+        }
+        
+    }
+    
+    func updateCalculationText() {
+        calculationText = ""
+        for token in currentCalculation {
+            calculationText += token.getDisplayText()
         }
     }
-
+    
 }
 
 #Preview {
