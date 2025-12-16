@@ -6,7 +6,7 @@
 //
 
 /// A number in any base allowing any size (within memory bounds or base^2^64)
-struct Number: Equatable {
+struct Number {
     var base: UInt8 = 10
     var numerals: [UInt8]
     var commaPosition: UInt8? = nil
@@ -28,7 +28,7 @@ struct Number: Equatable {
         
         if let commaPosition = commaPosition {
             // Insert the comma at the correct position
-            text.insert(Character(","), at: text.index(text.startIndex, offsetBy: Int(commaPosition)))
+            text.insert(Character(Language.getLanguage().comma), at: text.index(text.startIndex, offsetBy: Int(commaPosition)))
             
             // If the position is zero, append a leading zero for formatting
             if commaPosition == 0 {
@@ -39,6 +39,29 @@ struct Number: Equatable {
         return text
     }
     
+    func countPositionsAfterDecimal() -> Int {
+        let commaPosition = commaPosition ?? UInt8(numerals.count)
+        return numerals.count - Int(commaPosition)
+    }
+    
+    func countPositionsBeforeDecimal() -> Int {
+        let commaPosition = commaPosition ?? UInt8(numerals.count)
+        return Int(commaPosition)
+    }
+    
+    func getNumeralDecimalRelative(_ pindex: Int) -> UInt8 {
+        let indexz = -Int(commaPosition ?? UInt8(numerals.count)) + pindex + numerals.count
+        let index = numerals.count - indexz
+        
+        print("getting numeral at position \(index) (comma at: \(commaPosition), index: \(pindex), #numerals: \(numerals.count)")
+        
+        if index < 0 || index >= numerals.count {
+            return 0
+        }
+        
+        return numerals[index]
+    }
+    
     /// Appends a numeral when provided, a comma otherwise
     mutating func appendNumeral(new numeral: UInt8?) {
         if let numeral = numeral {
@@ -46,5 +69,12 @@ struct Number: Equatable {
         } else {
             commaPosition = UInt8(numerals.count)
         }
+    }
+}
+
+
+extension Number: Numberable, Equatable {
+    func calculate() -> Number {
+        return self
     }
 }

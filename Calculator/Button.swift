@@ -90,7 +90,11 @@ struct CalculatorButton: View {
             switch lastElement {
                 case .Number(var number):
                     switch self.buttonMeta {
-                        case .Numeral(_):
+                        case .Numeral:
+                            number.appendNumeral(new: self.buttonMeta.getNumber())
+                            self.currentCalculation[self.currentCalculation.count - 1] = Token.Number(number)
+                            return
+                        case .Decimal:
                             number.appendNumeral(new: self.buttonMeta.getNumber())
                             self.currentCalculation[self.currentCalculation.count - 1] = Token.Number(number)
                             return
@@ -120,6 +124,11 @@ struct CalculatorButton: View {
                 currentCalculation.append(newElement)
             case .Placeholder:
                 break
+            case .Decimal:
+                var number = Number(base: 10, numerals: [])
+                number.commaPosition = 0
+                let newElement = Token.Number(number)
+                currentCalculation.append(newElement)
         }
         
         
@@ -128,7 +137,7 @@ struct CalculatorButton: View {
 
     init(buttonMeta: Binding<CalculatorButtonMeta>, currentCalculation: Binding<[Token]>) {
         self._buttonMeta = buttonMeta
-        self._buttonColor = State(initialValue: buttonMeta.wrappedValue.getType() == .Numeral ? .gray : .orange)
+        self._buttonColor = State(initialValue: buttonMeta.wrappedValue.getButtonColor())
         self._currentCalculation = currentCalculation
     }
 }
@@ -156,6 +165,7 @@ enum CalculatorButtonMeta {
     
     /// Invisible button that takes up normal space
     case Placeholder
+    case Decimal
     
     
     /// Wether the button should be hidden
@@ -164,6 +174,8 @@ enum CalculatorButtonMeta {
         switch self {
             case .Numeral(_):
                 return .Numeral
+            case .Decimal:
+                return .Operator
             case .Operator(_):
                 return .Operator
             default:
@@ -195,32 +207,19 @@ enum CalculatorButtonMeta {
                 return String(x)
             case .Operator(let op):
                 return op.getDisplayText()
+            case .Decimal:
+                return Language.getLanguage().comma
             default:
                 return ""
         }
     }
     
     func getButtonColor() -> Color {
-        return getType() == .Numeral ? Color.gray : Color.orange
-    }
-}
-
-enum Operation {
-    case Addition
-    case Multiplication
-    case Subtraction
-    case Division
-
-    func getDisplayText() -> String {
         switch self {
-        case .Addition:
-            return "+"
-        case .Multiplication:
-            return "*"
-        case .Division:
-            return "/"
-        case .Subtraction:
-            return "-"
+            case .Operator(_):
+                return Color.orange
+            default:
+                return Color.gray
         }
     }
 }

@@ -36,7 +36,7 @@ struct ContentView: View {
         [
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(0)),
-            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Decimal),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Division))
         ],
     ]
@@ -109,6 +109,21 @@ struct ContentView: View {
         for token in currentCalculation {
             calculationText += token.getDisplayText()
         }
+        
+        var a = Number(base: 10, numerals: [6, 5, 4, 3])
+        a.commaPosition = 3
+        
+        //  654.3
+        // 5123.0
+        // 5777.3
+        // 7055.30
+        
+        let operation = OperationNode(arguments: [
+            a,
+            Number(base: 10, numerals: [5, 1, 2, 3])
+        ], operation: .Addition)
+        
+        print("result: \(operation.calculate().getDisplayText())")
     }
     
 }
