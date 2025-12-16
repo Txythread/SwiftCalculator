@@ -42,8 +42,10 @@ struct ContentView: View {
     ]
     
     @State var currentCalculation: [Token] = []
-    
     @State var buttonWidth: CGFloat = 10
+    
+    /// The padding of all buttons to the screen.
+    let totalButtonPadding: CGFloat = 20
     
     var body: some View {
         ZStack {
@@ -82,15 +84,17 @@ struct ContentView: View {
                                         maxHeight: buttonWidth
                                     )
                                 }
+                                .padding([.leading, .trailing], totalButtonPadding/4)
                                 
                             }
-                            
                             .onAppear {
-                                let totalPadding = 20
-                                buttonWidth = CGFloat((Int(geometry.size.width) - totalPadding) / buttons[rowIndex].count)
+                                // Recalculate the button width to match the available screen size
+                                buttonWidth = CGFloat((Int(geometry.size.width) - Int(totalButtonPadding)) / buttons[rowIndex].count)
                             }
+                            
                         }
                         .frame(height: buttonWidth)
+                        
                     }
                     
                 }
@@ -99,6 +103,7 @@ struct ContentView: View {
         
     }
     
+    /// Re-calculate the text of the label based on the currentCalculation variable
     func updateCalculationText() {
         calculationText = ""
         for token in currentCalculation {

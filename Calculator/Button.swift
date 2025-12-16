@@ -93,23 +93,35 @@ struct CalculatorButton: View {
                         case .Numeral(_):
                             number.appendNumeral(new: self.buttonMeta.getNumber())
                             self.currentCalculation[self.currentCalculation.count - 1] = Token.Number(number)
+                            return
                         default:
                             break
                     }
-                    return
                 case .Operator(_):
                     // Create new entry
                     // don't return
-                    break
+                    switch self.buttonMeta {
+                        case .Operator(_):
+                            self.currentCalculation.removeLast()
+                        default:
+                            break
+                    }
             }
         }
         
         // Handle creating a new element
-        let newElement = Token.Number(Number(base: 10, numerals: [self.buttonMeta.getNumber()!]))
+        switch self.buttonMeta {
+            case .Numeral(_):
+                let newElement = Token.Number(Number(base: 10, numerals: [self.buttonMeta.getNumber()!]))
+                currentCalculation.append(newElement)
+                
+            case .Operator(let operation):
+                let newElement = Token.Operator(operation)
+                currentCalculation.append(newElement)
+            case .Placeholder:
+                break
+        }
         
-        print("updating calculation")
-        
-        currentCalculation.append(newElement)
         
         
     }
