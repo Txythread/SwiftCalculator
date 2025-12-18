@@ -67,7 +67,10 @@ extension OperationNode: Numberable {
                 
                 return resultingNumber
             case .Multiplication:
-                break
+                let result = a.asDouble()! * b.asDouble()!
+                let resultingNumber = Number(fromDouble: result, base: a.base)
+                
+                return resultingNumber
             case .Subtraction:
                 break
             case .Division:
