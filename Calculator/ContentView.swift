@@ -13,31 +13,40 @@ struct ContentView: View {
     @State var calculationText = "Was geht ab im Taschenrechner"
     @State var buttons: [[CalculatorButtonMetaMeta]] = [
         [
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Clear),
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Division))
+        ],
+        
+        
+        
+        [
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(9)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(8)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(7)),
-            CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Addition))
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Multiplication))
         ],
         
         [
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(6)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(5)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(4)),
-            CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Multiplication))
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Subtraction))
         ],
         
         [
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(3)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(2)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(1)),
-            CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Subtraction))
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Addition))
         ],
         
         [
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(0)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Decimal),
-            CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Division))
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Calculate)
         ],
     ]
     
@@ -110,52 +119,6 @@ struct ContentView: View {
             calculationText += token.getDisplayText()
         }
         
-        var a = Number(base: 10, numerals: [6, 5, 4, 3])
-        a.commaPosition = 3
-        
-        if currentCalculation.count == 3 {
-            let argA = currentCalculation[0]
-            let argB = currentCalculation[2]
-            let op = currentCalculation[1]
-            
-            var a: Number? = nil
-            var b: Number? = nil
-            var operation: Operation? = nil
-            
-            switch argA {
-                case .Number(let number):
-                    a = number
-                default: break
-            }
-            
-            switch argB {
-                case .Number(let number):
-                    b = number
-                default: break
-            }
-            
-            switch op {
-                case .Operator(let op):
-                    operation = op
-                default: break
-            }
-            
-            let node = OperationNode(arguments: [a!, b!], operation: operation!)
-            
-            currentCalculation = [Token.Number(node.calculate())]
-        }
-        
-        //  654.3
-        // 5123.0
-        // 5777.3
-        // 7055.30
-        
-        let operation = OperationNode(arguments: [
-            a,
-            Number(base: 10, numerals: [5, 1, 2, 3])
-        ], operation: .Addition)
-        
-        print("result: \(operation.calculate().getDisplayText())")
     }
     
 }

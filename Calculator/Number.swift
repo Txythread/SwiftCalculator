@@ -95,8 +95,6 @@ struct Number {
         if commaPosition != nil && commaPosition! == numerals.count {
             commaPosition = nil
         }
-        
-        print("now has \(numerals) (decimal at: \(commaPosition)")
     }
     
     func asDouble() -> Double? {

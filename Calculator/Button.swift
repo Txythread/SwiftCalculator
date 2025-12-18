@@ -129,6 +129,40 @@ struct CalculatorButton: View {
                 number.commaPosition = 0
                 let newElement = Token.Number(number)
                 currentCalculation.append(newElement)
+            case .Clear:
+                currentCalculation = []
+            case .Calculate:
+                if currentCalculation.count == 3 {
+                    let argA = currentCalculation[0]
+                    let argB = currentCalculation[2]
+                    let op = currentCalculation[1]
+                    
+                    var a: Number? = nil
+                    var b: Number? = nil
+                    var operation: Operation? = nil
+                    
+                    switch argA {
+                        case .Number(let number):
+                            a = number
+                        default: break
+                    }
+                    
+                    switch argB {
+                        case .Number(let number):
+                            b = number
+                        default: break
+                    }
+                    
+                    switch op {
+                        case .Operator(let op):
+                            operation = op
+                        default: break
+                    }
+                    
+                    let node = OperationNode(arguments: [a!, b!], operation: operation!)
+                    
+                    currentCalculation = [Token.Number(node.calculate())]
+                }
         }
         
         
@@ -162,6 +196,8 @@ struct CalculatorButtonMetaMeta: Identifiable {
 enum CalculatorButtonMeta {
     case Numeral(Int)
     case Operator(Operation)
+    case Calculate
+    case Clear
     
     /// Invisible button that takes up normal space
     case Placeholder
@@ -177,6 +213,8 @@ enum CalculatorButtonMeta {
             case .Decimal:
                 return .Operator
             case .Operator(_):
+                return .Operator
+            case .Calculate:
                 return .Operator
             default:
                 return .Other
@@ -209,6 +247,10 @@ enum CalculatorButtonMeta {
                 return op.getDisplayText()
             case .Decimal:
                 return Language.getLanguage().comma
+            case .Calculate:
+                return "="
+            case .Clear:
+                return "AC"
             default:
                 return ""
         }
@@ -218,6 +260,10 @@ enum CalculatorButtonMeta {
         switch self {
             case .Operator(_):
                 return Color.orange
+            case .Calculate:
+                return Color.orange
+            case .Clear:
+                return Color.red
             default:
                 return Color.gray
         }
