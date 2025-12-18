@@ -12,6 +12,7 @@ struct Number {
     var base: UInt8 = 10
     var numerals: [UInt8]
     var commaPosition: UInt8? = nil
+    var isNegative: Bool = false
     
     
     /// Creates a text which can be displayed on screen
@@ -23,6 +24,11 @@ struct Number {
         assert(base <= 10)
         
         var text = ""
+        
+        if self.isNegative {
+            text += "-"
+        }
+        
         clonedSelf.numerals.forEach { numeral in
             text += String(numeral)
         }
@@ -54,7 +60,7 @@ struct Number {
         let indexz = -Int(commaPosition ?? UInt8(numerals.count)) + pindex + numerals.count
         let index = numerals.count - indexz
         
-        print("getting numeral at position \(index) (comma at: \(commaPosition), index: \(pindex), #numerals: \(numerals.count)")
+        print("getting numeral at position \(index) (comma at: \(String(describing: commaPosition)), index: \(pindex), #numerals: \(numerals.count)")
         
         if index < 0 || index >= numerals.count {
             return 0
@@ -65,7 +71,7 @@ struct Number {
     
     /// Removes excessive leading and trailing zeroes
     mutating func cleanUp() {
-        print("start has \(numerals) (decimal at: \(commaPosition)")
+        print("start has \(numerals) (decimal at: \(String(describing: commaPosition))")
         
         
         while true {
@@ -101,6 +107,10 @@ struct Number {
             double += Double(self.getNumeralDecimalRelative(i)) * Double(pow(Double(self.base), Double(i - 1)))
         }
         
+        if self.isNegative {
+            double = -double
+        }
+        
         return double
     }
     
@@ -120,7 +130,7 @@ struct Number {
     }
     
     init(fromDouble double: Double, base: UInt8) {
-        let text = String(double)
+        let text = String(abs(double))
         
         self.base = base
         self.commaPosition = nil
@@ -137,6 +147,8 @@ struct Number {
                 self.commaPosition = UInt8(self.numerals.count)
             }
         }
+        
+        self.isNegative = double < 0
         
     }
 }
