@@ -17,9 +17,6 @@ struct Number {
     
     /// Creates a text which can be displayed on screen
     func getDisplayText() -> String {
-        var clonedSelf = self
-        clonedSelf.cleanUp()
-        
         // For now, texts can only be created when the base is decimal or lower
         assert(base <= 10)
         
@@ -29,11 +26,11 @@ struct Number {
             text += "-"
         }
         
-        clonedSelf.numerals.forEach { numeral in
+        self.numerals.forEach { numeral in
             text += String(numeral)
         }
         
-        if let commaPosition = clonedSelf.commaPosition {
+        if let commaPosition = self.commaPosition {
             // Insert the comma at the correct position
             text.insert(Character(Language.getLanguage().comma), at: text.index(text.startIndex, offsetBy: Int(commaPosition)))
             
@@ -60,7 +57,6 @@ struct Number {
         let indexz = -Int(commaPosition ?? UInt8(numerals.count)) + pindex + numerals.count
         let index = numerals.count - indexz
         
-        print("getting numeral at position \(index) (comma at: \(String(describing: commaPosition)), index: \(pindex), #numerals: \(numerals.count)")
         
         if index < 0 || index >= numerals.count {
             return 0
@@ -69,11 +65,16 @@ struct Number {
         return numerals[index]
     }
     
+    public func cleanedUp() -> Self {
+        var clone = self
+        
+        clone.cleanUp()
+        
+        return clone
+    }
+    
     /// Removes excessive leading and trailing zeroes
-    mutating func cleanUp() {
-        print("start has \(numerals) (decimal at: \(String(describing: commaPosition))")
-        
-        
+    public mutating func cleanUp() {
         while true {
             if numerals.isEmpty { break }
             
@@ -97,6 +98,16 @@ struct Number {
         }
     }
     
+    /// Appends a numeral when provided, a comma otherwise
+    mutating func appendNumeral(new numeral: UInt8?) {
+        if let numeral = numeral {
+            numerals.append(numeral)
+        } else {
+            commaPosition = UInt8(numerals.count)
+        }
+    }
+    
+    
     func asDouble() -> Double? {
         var double = 0.0
         
@@ -112,15 +123,7 @@ struct Number {
         return double
     }
     
-    /// Appends a numeral when provided, a comma otherwise
-    mutating func appendNumeral(new numeral: UInt8?) {
-        if let numeral = numeral {
-            numerals.append(numeral)
-        } else {
-            commaPosition = UInt8(numerals.count)
-        }
-    }
-    
+
     
     init(base: UInt8, numerals: [UInt8]) {
         self.base = base

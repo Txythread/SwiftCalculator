@@ -132,37 +132,7 @@ struct CalculatorButton: View {
             case .Clear:
                 currentCalculation = []
             case .Calculate:
-                if currentCalculation.count == 3 {
-                    let argA = currentCalculation[0]
-                    let argB = currentCalculation[2]
-                    let op = currentCalculation[1]
-                    
-                    var a: Number? = nil
-                    var b: Number? = nil
-                    var operation: Operation? = nil
-                    
-                    switch argA {
-                        case .Number(let number):
-                            a = number
-                        default: break
-                    }
-                    
-                    switch argB {
-                        case .Number(let number):
-                            b = number
-                        default: break
-                    }
-                    
-                    switch op {
-                        case .Operator(let op):
-                            operation = op
-                        default: break
-                    }
-                    
-                    let node = OperationNode(arguments: [a!, b!], operation: operation!)
-                    
-                    currentCalculation = [Token.Number(node.calculate())]
-                }
+                currentCalculation = [Token.Number(OperationNode.generateFromTokens(tokens: currentCalculation).calculateClean())]
         }
         
         
