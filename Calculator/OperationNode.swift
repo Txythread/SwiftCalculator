@@ -20,6 +20,7 @@ struct OperationNode {
         cursor: inout Int,
         minimumImportance minimumTokenImportance: Int
     ) -> Numberable {
+        
         var currentNode: Numberable? = nil
         var nextOperation: Operation? = nil
         
@@ -43,7 +44,10 @@ struct OperationNode {
                     
                     let newNode = generateFromTokensDelimited(tokens, cursor: &cursor, minimumImportance: operation.importance+1)
                     currentNode = OperationNode(arguments: [currentNode!, newNode], operation: operation)
+                    
+                    
                     nextOperation = nil
+                    continue
                     
                     
             }
