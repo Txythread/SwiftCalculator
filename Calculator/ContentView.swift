@@ -119,6 +119,10 @@ struct ContentView: View {
             calculationText += token.getDisplayText()
         }
         
+        // Prevent empty texts
+        if calculationText == "" {
+            calculationText = " "
+        }
     }
     
 }

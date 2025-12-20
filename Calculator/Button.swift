@@ -34,7 +34,7 @@ struct CalculatorButton: View {
                     let originalColor = buttonMeta.getButtonColor()
                     withAnimation(.easeInOut(duration: 0.2)) {
                         pressed = true
-                        buttonColor = .blue
+                        buttonColor = .white
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         withAnimation(.easeInOut(duration: 0.1)) {

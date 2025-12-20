@@ -11,11 +11,21 @@ struct OperationNode {
     var operation: Operation
     
     static func generateFromTokens(tokens: [Token]) -> Numberable {
-        // The left side node
+        var cursor = 0
+        return generateFromTokensDelimited(tokens, cursor: &cursor, minimumImportance: 0)
+    }
+    
+    static private func generateFromTokensDelimited(
+        _ tokens: [Token],
+        cursor: inout Int,
+        minimumImportance minimumTokenImportance: Int
+    ) -> Numberable {
         var currentNode: Numberable? = nil
         var nextOperation: Operation? = nil
         
-        for token in tokens {
+        while cursor < tokens.count {
+            let token = tokens[cursor]
+            
             switch token {
                 case .Number(let number):
                     if let operation = nextOperation {
@@ -25,8 +35,20 @@ struct OperationNode {
                         currentNode = number
                     }
                 case .Operator(let operation):
-                    nextOperation = operation
+                    if operation.importance <= minimumTokenImportance {
+                        return currentNode!
+                    }
+                    
+                    cursor += 1
+                    
+                    let newNode = generateFromTokensDelimited(tokens, cursor: &cursor, minimumImportance: operation.importance+1)
+                    currentNode = OperationNode(arguments: [currentNode!, newNode], operation: operation)
+                    nextOperation = nil
+                    
+                    
             }
+            
+            cursor += 1
         }
         
         return currentNode!
@@ -93,3 +115,4 @@ extension OperationNode: Numberable {
         }
     }
 }
+

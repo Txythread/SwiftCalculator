@@ -23,4 +23,17 @@ enum Operation {
                 return "-"
         }
     }
+    
+    var importance: Int {
+        switch self {
+            case .Addition:
+                return 1
+            case .Multiplication:
+                return 10
+            case .Subtraction:
+                return 1
+            case .Division:
+                return 10
+        }
+    }
 }
