@@ -17,6 +17,8 @@ struct Number {
     
     /// Creates a text which can be displayed on screen
     func getDisplayText() -> String {
+        print("10: \(Number(base: 10, numerals: [1, 0]).cleanedUp().asDouble())")
+        
         // For now, texts can only be created when the base is decimal or lower
         assert(base <= 10)
         
@@ -78,6 +80,7 @@ struct Number {
         while true {
             if numerals.isEmpty { break }
             
+            
             if numerals[0] == 0 {
                 numerals.remove(at: 0)
                 if commaPosition != nil && commaPosition! != 0 {
@@ -86,7 +89,7 @@ struct Number {
                 continue
             }
             
-            if numerals.last == 0 && numerals.count > Int(commaPosition ?? 0) {
+            if numerals.last == 0 && numerals.count > Int(commaPosition ?? UInt8(numerals.count)) {
                 numerals.removeLast()
                 continue
             }

@@ -12,19 +12,19 @@ struct OperationNode {
     
     static func generateFromTokens(tokens: [Token]) -> Numberable {
         var cursor = 0
-        return generateFromTokensDelimited(tokens, cursor: &cursor, minimumImportance: 0)
+        return generateFromTokensDelimited(tokens, cursor: &cursor, minimumImportance: 0).0
     }
     
     static private func generateFromTokensDelimited(
         _ tokens: [Token],
         cursor: inout Int,
         minimumImportance minimumTokenImportance: Int
-    ) -> Numberable {
+    ) -> (Numberable, Bool) {
         
         var currentNode: Numberable? = nil
         var nextOperation: Operation? = nil
         
-        while cursor < tokens.count {
+        tokenProcessing: while cursor < tokens.count {
             let token = tokens[cursor]
             
             switch token {
@@ -37,13 +37,17 @@ struct OperationNode {
                     }
                 case .Operator(let operation):
                     if operation.importance <= minimumTokenImportance {
-                        return currentNode!
+                        return (currentNode!, false)
                     }
                     
                     cursor += 1
                     
                     let newNode = generateFromTokensDelimited(tokens, cursor: &cursor, minimumImportance: operation.importance+1)
-                    currentNode = OperationNode(arguments: [currentNode!, newNode], operation: operation)
+                    currentNode = OperationNode(arguments: [currentNode!, newNode.0], operation: operation)
+                    
+                    if newNode.1 {
+                        return (currentNode!, true)
+                    }
                     
                     
                     nextOperation = nil
@@ -61,8 +65,6 @@ struct OperationNode {
                         number = group.values[index]
                     }
                     
-                    print("\(groupName)\(index) contains: \(number?.asDouble())")
-                    
                     if let operation = nextOperation {
                         currentNode = OperationNode(arguments: [currentNode!, number!], operation: operation)
                         nextOperation = nil
@@ -70,12 +72,31 @@ struct OperationNode {
                         currentNode = number
                         print("set the thing")
                     }
+                case .StoreInto:
+                    assert(cursor + 2 == tokens.count, "There was the wrong amount of tokens supplied")
+                    
+                    let variable = tokens[cursor + 1]
+                    
+                    cursor += 2
+                    
+                    switch variable {
+                        case .Variable(let groupName, let index):
+                            let groupIndex = variableGroups.firstIndex { group in
+                                return group.groupName == groupName
+                            }
+                            
+                            variableGroups[groupIndex!].values[index] = currentNode! as! Number
+                        default:
+                            assert(false)
+                    }
+                    
+                    return (currentNode!, true)
             }
             
             cursor += 1
         }
         
-        return currentNode!
+        return (currentNode!, false)
     }
     
     init(arguments: [Numberable], operation: Operation) {

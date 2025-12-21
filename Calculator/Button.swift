@@ -113,6 +113,8 @@ struct CalculatorButton: View {
                 case .Variable(_, _):
                     // Crate a new entry
                     break
+                case .StoreInto:
+                    break
             }
         }
         
@@ -121,7 +123,6 @@ struct CalculatorButton: View {
             case .Numeral(_):
                 let newElement = Token.Number(Number(base: 10, numerals: [self.buttonMeta.getNumber()!]))
                 currentCalculation.append(newElement)
-                
             case .Operator(let operation):
                 let newElement = Token.Operator(operation)
                 currentCalculation.append(newElement)
@@ -139,10 +140,10 @@ struct CalculatorButton: View {
             case .Variable(let groupName):
                 let newElement = Token.Variable(groupName, 0)
                 currentCalculation.append(newElement)
+            case .StoreInto:
+                let newElement = Token.StoreInto
+                currentCalculation.append(newElement)
         }
-        
-        
-        
     }
 
     init(buttonMeta: Binding<CalculatorButtonMeta>, currentCalculation: Binding<[Token]>) {
@@ -174,6 +175,7 @@ enum CalculatorButtonMeta {
     case Operator(Operation)
     case Calculate
     case Clear
+    case StoreInto
     
     /// Invisible button that takes up normal space
     case Placeholder
@@ -232,6 +234,8 @@ enum CalculatorButtonMeta {
                 return "AC"
             case .Variable(let groupName):
                 return groupName
+            case .StoreInto:
+                return "->"
             default:
                 return ""
         }

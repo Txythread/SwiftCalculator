@@ -47,7 +47,7 @@ struct ContentView: View {
         ],
         
         [
-            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.StoreInto),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(0)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Decimal),

@@ -10,6 +10,7 @@ enum Token: Equatable {
     case Number(Number)
     case Operator(Operation)
     case Variable(String, Int)
+    case StoreInto
     
 
     
@@ -21,6 +22,8 @@ enum Token: Equatable {
                 return operation.getDisplayText()
             case .Variable(let groupName, let index):
                 return "\(groupName)\(index)"
+            case .StoreInto:
+                return "->"
         }
     }
     
@@ -30,28 +33,30 @@ enum Token: Equatable {
                 switch rhs {
                     case .Number(let numberB):
                         return numberA == numberB
-                    case .Operator(_):
-                        return false
-                    case .Variable(_, _):
+                    default:
                         return false
                 }
             case .Operator(let operationA):
                 switch rhs {
-                    case .Number(_):
-                        return false
                     case .Operator(let operationB):
                         return operationA == operationB
-                    case .Variable(_, _):
+                    default:
                         return false
                 }
             case .Variable(let nameA, let valueA):
                 switch rhs {
-                    case .Number(_):
-                        return false
-                    case .Operator(_):
-                        return false
                     case .Variable(let nameB, let valueB):
                         return nameA == nameB && valueA == valueB
+                    default:
+                        return false
+                }
+                
+            case .StoreInto:
+                switch rhs {
+                    case .StoreInto:
+                        return true
+                    default:
+                        return false
                 }
         }
     }
