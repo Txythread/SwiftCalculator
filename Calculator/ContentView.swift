@@ -16,12 +16,14 @@ struct ContentView: View {
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Clear),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Operator(.Division))
         ],
         
         
         
         [
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(9)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(8)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(7)),
@@ -29,6 +31,7 @@ struct ContentView: View {
         ],
         
         [
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(6)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(5)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(4)),
@@ -36,6 +39,7 @@ struct ContentView: View {
         ],
         
         [
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Variable("x")),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(3)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(2)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(1)),
@@ -43,6 +47,7 @@ struct ContentView: View {
         ],
         
         [
+            CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Placeholder),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Numeral(0)),
             CalculatorButtonMetaMeta(CalculatorButtonMeta.Decimal),
@@ -54,7 +59,7 @@ struct ContentView: View {
     @State var buttonWidth: CGFloat = 10
     
     /// The padding of all buttons to the screen.
-    let totalButtonPadding: CGFloat = 20
+    let totalButtonPadding: CGFloat = 5
     
     var body: some View {
         ZStack {

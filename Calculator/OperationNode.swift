@@ -50,6 +50,26 @@ struct OperationNode {
                     continue
                     
                     
+                case .Variable(let groupName, let index):
+                    var number: Number? = nil
+                    
+                    for group in variableGroups {
+                        if group.groupName != groupName {
+                            continue
+                        }
+                        
+                        number = group.values[index]
+                    }
+                    
+                    print("\(groupName)\(index) contains: \(number?.asDouble())")
+                    
+                    if let operation = nextOperation {
+                        currentNode = OperationNode(arguments: [currentNode!, number!], operation: operation)
+                        nextOperation = nil
+                    } else {
+                        currentNode = number
+                        print("set the thing")
+                    }
             }
             
             cursor += 1

@@ -12,7 +12,7 @@ struct CalculatorButton: View {
     @Binding var currentCalculation: [Token]
     @State var buttonColor: Color
     @State var pressed = false
-    @State var buttonShrink: CGFloat = 10
+    @State var buttonShrink: CGFloat = 5
     
     #if os(macOS)
     #else
@@ -110,6 +110,9 @@ struct CalculatorButton: View {
                         default:
                             break
                     }
+                case .Variable(_, _):
+                    // Crate a new entry
+                    break
             }
         }
         
@@ -133,6 +136,9 @@ struct CalculatorButton: View {
                 currentCalculation = []
             case .Calculate:
                 currentCalculation = [Token.Number(OperationNode.generateFromTokens(tokens: currentCalculation).calculateClean())]
+            case .Variable(let groupName):
+                let newElement = Token.Variable(groupName, 0)
+                currentCalculation.append(newElement)
         }
         
         
@@ -172,6 +178,7 @@ enum CalculatorButtonMeta {
     /// Invisible button that takes up normal space
     case Placeholder
     case Decimal
+    case Variable(String)
     
     
     /// Wether the button should be hidden
@@ -179,6 +186,8 @@ enum CalculatorButtonMeta {
     func getType() -> CalculatorButtonType {
         switch self {
             case .Numeral(_):
+                return .Numeral
+            case .Variable(_):
                 return .Numeral
             case .Decimal:
                 return .Operator
@@ -221,6 +230,8 @@ enum CalculatorButtonMeta {
                 return "="
             case .Clear:
                 return "AC"
+            case .Variable(let groupName):
+                return groupName
             default:
                 return ""
         }

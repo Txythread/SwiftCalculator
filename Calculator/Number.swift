@@ -80,7 +80,7 @@ struct Number {
             
             if numerals[0] == 0 {
                 numerals.remove(at: 0)
-                if commaPosition != nil {
+                if commaPosition != nil && commaPosition! != 0 {
                     commaPosition! -= 1
                 }
                 continue

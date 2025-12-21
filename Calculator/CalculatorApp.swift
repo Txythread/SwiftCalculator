@@ -8,6 +8,10 @@
 import SwiftUI
 import SwiftData
 
+var variableGroups = [
+    VariableGroup(values: 5, groupName: "x")
+]
+
 @main
 struct CalculatorApp: App {
 
