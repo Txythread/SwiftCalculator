@@ -110,10 +110,26 @@ struct CalculatorButton: View {
                         default:
                             break
                     }
-                case .Variable(_, _):
-                    // Crate a new entry
+                case .Variable(let tokenGroupName, let groupIndex):
+                    switch self.buttonMeta {
+                        case .Variable(let groupName):
+                            if groupName != tokenGroupName { break }
+                            
+                            let group = variableGroups.first { group in
+                                group.groupName == groupName
+                            }
+                            let groupSize = group!.values.count
+                            
+                            self.currentCalculation.removeLast()
+                            self.currentCalculation.append(Token.Variable(groupName, (groupIndex + 1) % groupSize))
+                            
+                            return
+                            
+                        default: break
+                    }
                     break
                 case .StoreInto:
+                    
                     break
             }
         }
